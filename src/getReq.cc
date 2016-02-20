@@ -3,6 +3,9 @@
 #include <cstring>
 #include <sstream>
 #include <iomanip>
+
+#include "getReq.h"
+
 using namespace std;
 
 string url_encode(const string &value) 

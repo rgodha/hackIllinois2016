@@ -1,1 +1,11 @@
+module SafeBrowsing;
 
+%%{
+	#include "Plugin.h"
+%%}
+	
+function test_gsb%(%): count
+%{
+	plugin::HackIllinois_Safe_Browsing::plugin.do_url_request();
+	return 0;
+%}

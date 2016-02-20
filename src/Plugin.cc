@@ -1,5 +1,6 @@
 #include "Plugin.h"
 
+#include <string.h>
 #include <curl/curl.h>
 #include <curl/easy.h>
 
@@ -63,6 +64,43 @@ int Plugin::download_list_types()
 	snprintf(url, 256, "%s?client=%s&key=%s&appver=%s&pver=%s", baseURL, client, apikey, appver, pver);
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler);
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+	curl_res = curl_easy_perform(curl);
+	
+	if(curl_res != CURLE_OK) {
+		printf("Error: %s\n", curl_easy_strerror(curl_res));
+	}
+	
+	curl_easy_cleanup(curl);
+	return 0;
+}
+
+int Plugin::download_data_for_list(char* list_name)
+{
+	CURLcode curl_res;
+	CURL *curl = curl_easy_init();
+
+	struct MemoryStruct chunk;
+
+	chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
+	chunk.size   = 0;       /* no data at this point */
+
+	const char* baseURL = "https://safebrowsing.google.com/safebrowsing/downloads";
+	const char* client = "api";
+	const char* apikey = "AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg";
+	const char* appver = "1.5.2";
+	const char* pver = "3.0";
+
+	char url[256];
+	snprintf(url, 256, "%s?client=%s&key=%s&appver=%s&pver=%s", baseURL, client, apikey, appver, pver);
+	char list[64];
+	snprintf(list, 64, "%s;\n", list_name);
+
+	curl_easy_setopt(curl, CURLOPT_URL, url);
+	curl_easy_setopt(curl, CURLOPT_POST, 1L);
+	
+	curl_easy_setopt(curl, CURLOPT_POSTFIELDS, list);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_res = curl_easy_perform(curl);

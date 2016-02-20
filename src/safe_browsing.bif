@@ -4,8 +4,15 @@ module SafeBrowsing;
 	#include "Plugin.h"
 %%}
 	
-function test_gsb%(%): count
+function download_list_types%(%): count
 %{
 	plugin::HackIllinois_Safe_Browsing::plugin.download_list_types();
 	return 0;
 %}
+
+function download_list%(%): count
+%{
+	plugin::HackIllinois_Safe_Browsing::plugin.download_data_for_list("goog-malware-shavar");
+	return 0;
+%}
+

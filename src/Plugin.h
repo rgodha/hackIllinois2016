@@ -18,6 +18,7 @@ class Plugin : public ::plugin::Plugin
 {
 public:
 	int download_list_types();
+	int download_data_for_list(char* list_name);
 protected:
 	// Overridden from plugin::Plugin.
 	virtual plugin::Configuration Configure();

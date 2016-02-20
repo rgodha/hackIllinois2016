@@ -17,35 +17,54 @@ plugin::Configuration Plugin::Configure()
 	return config;
 	}
 
-size_t url_response_handler( void *ptr, size_t size, size_t nmemb, void *stream)
+struct MemoryStruct {
+	char* memory;
+	size_t  size;
+	};
+
+static size_t url_response_handler(void *contents, size_t size, size_t nmemb, void *userp)
 	{
-	printf("%d bytes received from URL\n", (int) size);
-	return size;
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+
+	mem->memory = (char *)realloc(mem->memory, mem->size + realsize + 1);
+	if(mem->memory == NULL) {
+		/* out of memory! */
+		printf("not enough memory (realloc returned NULL)\n");
+		return 0;
+		}
+
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size]  = 0;
+
+	printf("%s\n", mem->memory);
+
+	return realsize;
 	}
 
-int Plugin::do_url_request()
+int Plugin::download_list_types()
 {
 	CURLcode curl_res;
 	CURL *curl = curl_easy_init();
-	std::string client = "api";
-	std::string apikey = "AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg";
-	std::string appver = "1.5.2";
-	std::string pver = "3.0";
 
-	std::string baseURL = "https://safebrowsing.google.com/safebrowsing/list";
-	std::string arguments = "";
-	arguments += "client=" + Plugin::url_encode(client)+"&";
-	arguments += "key=" + Plugin::url_encode(apikey) + "&";
-	arguments += "appver=" + Plugin::url_encode(appver) + "&";
-	arguments += "pver=" + Plugin::url_encode(pver);
-	
-	std::string url_to_req = baseURL + "?" + arguments;
-	
-	printf("URL: %s\n", url_to_req.c_str());
-	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-	curl_easy_setopt(curl, CURLOPT_URL, url_to_req.c_str());
+	struct MemoryStruct chunk;
+
+	chunk.memory = (char *)malloc(1); /* will be grown as needed by the realloc above */
+	chunk.size   = 0;       /* no data at this point */
+
+	const char* baseURL = "https://safebrowsing.google.com/safebrowsing/list";
+	const char* client = "api";
+	const char* apikey = "AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg";
+	const char* appver = "1.5.2";
+	const char* pver = "3.0";
+
+	char url[256];
+	snprintf(url, 256, "%s?client=%s&key=%s&appver=%s&pver=%s", baseURL, client, apikey, appver, pver);
+
+	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler);
-	printf("Now send the request\n");
+	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_res = curl_easy_perform(curl);
 	
 	if(curl_res != CURLE_OK) {

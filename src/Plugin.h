@@ -17,7 +17,7 @@ namespace HackIllinois_Safe_Browsing {
 class Plugin : public ::plugin::Plugin
 {
 public:
-	int do_url_request();
+	int download_list_types();
 protected:
 	// Overridden from plugin::Plugin.
 	virtual plugin::Configuration Configure();

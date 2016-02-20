@@ -6,6 +6,6 @@ module SafeBrowsing;
 	
 function test_gsb%(%): count
 %{
-	plugin::HackIllinois_Safe_Browsing::plugin.do_url_request();
+	plugin::HackIllinois_Safe_Browsing::plugin.download_list_types();
 	return 0;
 %}

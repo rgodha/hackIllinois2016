@@ -68,6 +68,12 @@ static size_t url_response_handler_proto_buff(void *contents, size_t size, size_
 
 	GOOGLE_PROTOBUF_VERIFY_VERSION;
 
+	uint32 chunk_len = (mem->memory[0] & 0xff) << 24 |
+		           (mem->memory[1] & 0xff) << 16 |
+		           (mem->memory[2] & 0xff) << 8  |
+		           (mem->memory[3] & 0xff);
+	printf("Parsing chunk of length %d\n", chunk_len);
+
 	return realsize;
 	}
 

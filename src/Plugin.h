@@ -21,8 +21,6 @@ public:
 protected:
 	// Overridden from plugin::Plugin.
 	virtual plugin::Configuration Configure();
-private:
-	std::string url_encode(const std::string &value);
 };
 
 extern Plugin plugin;

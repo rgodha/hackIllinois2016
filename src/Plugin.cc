@@ -17,36 +17,39 @@ plugin::Configuration Plugin::Configure()
 	return config;
 	}
 
+size_t url_response_handler( void *ptr, size_t size, size_t nmemb, void *stream)
+	{
+	printf("%d bytes received from URL\n", (int) size);
+	return size;
+	}
+
 int Plugin::do_url_request()
 {
 	CURLcode curl_res;
 	CURL *curl = curl_easy_init();
-	std::string client = "firefox";
+	std::string client = "api";
 	std::string apikey = "AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg";
-	std::string appver = "1.01";
-	std::string pver = "3.1";
-	std::string URL = "http://www.google.com";
-	//string URL = "https://sb-ssl.google.com/safebrowsing/api/lookup?client=fedora&key=AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg&appver=1.01&pver=3.1&url="+URLReq;
-	//string URL1 = "https://sb-ssl.google.com/safebrowsing/api/lookup?client=fedora&key=AIzaSyCdA-CmA7dusGVUIw3d9LubMumv-JgqxMg&appver=1.5.2&pver=3.1";
- 		
-	std::string baseURL = "https://sb-ssl.google.com/safebrowsing/api/lookup";
+	std::string appver = "1.5.2";
+	std::string pver = "3.0";
+
+	std::string baseURL = "https://safebrowsing.google.com/safebrowsing/list";
 	std::string arguments = "";
 	arguments += "client=" + Plugin::url_encode(client)+"&";
 	arguments += "key=" + Plugin::url_encode(apikey) + "&";
 	arguments += "appver=" + Plugin::url_encode(appver) + "&";
-	arguments += "pver=" + Plugin::url_encode(pver) + "&";
-	arguments += "url=" + Plugin::url_encode(URL);
+	arguments += "pver=" + Plugin::url_encode(pver);
 	
 	std::string url_to_req = baseURL + "?" + arguments;
 	
-	//string url_to_req = "http://www.google.com";	
-	cout << "URL: " << url_to_req << endl;
+	printf("URL: %s\n", url_to_req.c_str());
+	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 	curl_easy_setopt(curl, CURLOPT_URL, url_to_req.c_str());
-  	cout << "Now send the request\n";
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler);
+	printf("Now send the request\n");
 	curl_res = curl_easy_perform(curl);
 	
 	if(curl_res != CURLE_OK) {
-		cout << "Error: %s\n" << curl_easy_strerror(curl_res);
+		printf("Error: %s\n", curl_easy_strerror(curl_res));
 	}
 	
 	curl_easy_cleanup(curl);

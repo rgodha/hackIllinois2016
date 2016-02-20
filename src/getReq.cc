@@ -2,7 +2,7 @@
 #include <curl/curl.h>
 #include <cstring>
 #include <sstream>
-//#include <iomanip>
+#include <iomanip>
 using namespace std;
 
 string url_encode(const string &value) 
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 	
 	//string url_to_req = "http://www.google.com";	
 	cout << "URL: " << url_to_req << endl;
-  	curl_easy_setopt(curl, CURLOPT_URL, url_to_req);
+	curl_easy_setopt(curl, CURLOPT_URL, url_to_req.c_str());
   	cout << "Now send the request\n";
 	curl_res = curl_easy_perform(curl);
 	

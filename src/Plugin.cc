@@ -72,8 +72,13 @@ static size_t url_response_handler_proto_buff(void *contents, size_t size, size_
 		           (mem->memory[1] & 0xff) << 16 |
 		           (mem->memory[2] & 0xff) << 8  |
 		           (mem->memory[3] & 0xff);
+
 	printf("Parsing chunk of length %d\n", chunk_len);
 	// TODO: Parse the chunk data using protocol buffers
+	// 	char* chunk_data = mem->memory + 4;
+	// Figure out how to do something like:
+	//     ProtoBuffer->Parse(chunk_data, chunk_len);
+
 
 	return realsize;
 	}

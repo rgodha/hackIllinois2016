@@ -49,6 +49,28 @@ static size_t url_response_handler(void *contents, size_t size, size_t nmemb, vo
 	return realsize;
 	}
 
+// The URL response callback function for protobuffers
+static size_t url_response_handler_proto_buff(void *contents, size_t size, size_t nmemb, void *userp)
+	{
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *)userp;
+
+	mem->memory = (char *)realloc(mem->memory, mem->size + realsize + 1);
+	if(mem->memory == NULL) {
+		/* out of memory! */
+		printf("not enough memory (realloc returned NULL)\n");
+		return 0;
+		}
+
+	memcpy(&(mem->memory[mem->size]), contents, realsize);
+	mem->size += realsize;
+	mem->memory[mem->size]  = 0;
+
+	GOOGLE_PROTOBUF_VERIFY_VERSION;
+
+	return realsize;
+	}
+
 // Implements HTTP Response for List from Google Safe Browsing API documentation
 int Plugin::download_list_types()
 {
@@ -140,7 +162,7 @@ int Plugin::download_redirect_data_for_list(char* redirect_url)
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
 	curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
-	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler);
+	curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, url_response_handler_proto_buff);
 	curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
 	curl_res = curl_easy_perform(curl);
 	

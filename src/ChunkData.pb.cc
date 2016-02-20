@@ -160,6 +160,7 @@ const int ChunkData::kAddNumbersFieldNumber;
 ChunkData::ChunkData()
   : ::google::protobuf::Message() {
   SharedCtor();
+  // @@protoc_insertion_point(constructor:ChunkData)
 }
 
 void ChunkData::InitAsDefaultInstance() {
@@ -169,23 +170,26 @@ ChunkData::ChunkData(const ChunkData& from)
   : ::google::protobuf::Message() {
   SharedCtor();
   MergeFrom(from);
+  // @@protoc_insertion_point(copy_constructor:ChunkData)
 }
 
 void ChunkData::SharedCtor() {
+  ::google::protobuf::internal::GetEmptyString();
   _cached_size_ = 0;
   chunk_number_ = 0;
   chunk_type_ = 0;
   prefix_type_ = 0;
-  hashes_ = const_cast< ::std::string*>(&::google::protobuf::internal::kEmptyString);
+  hashes_ = const_cast< ::std::string*>(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
 }
 
 ChunkData::~ChunkData() {
+  // @@protoc_insertion_point(destructor:ChunkData)
   SharedDtor();
 }
 
 void ChunkData::SharedDtor() {
-  if (hashes_ != &::google::protobuf::internal::kEmptyString) {
+  if (hashes_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
     delete hashes_;
   }
   if (this != default_instance_) {
@@ -214,16 +218,29 @@ ChunkData* ChunkData::New() const {
 }
 
 void ChunkData::Clear() {
-  if (_has_bits_[0 / 32] & (0xffu << (0 % 32))) {
-    chunk_number_ = 0;
-    chunk_type_ = 0;
+#define OFFSET_OF_FIELD_(f) (reinterpret_cast<char*>(      \
+  &reinterpret_cast<ChunkData*>(16)->f) - \
+   reinterpret_cast<char*>(16))
+
+#define ZR_(first, last) do {                              \
+    size_t f = OFFSET_OF_FIELD_(first);                    \
+    size_t n = OFFSET_OF_FIELD_(last) - f + sizeof(last);  \
+    ::memset(&first, 0, n);                                \
+  } while (0)
+
+  if (_has_bits_[0 / 32] & 15) {
+    ZR_(chunk_number_, chunk_type_);
     prefix_type_ = 0;
     if (has_hashes()) {
-      if (hashes_ != &::google::protobuf::internal::kEmptyString) {
+      if (hashes_ != &::google::protobuf::internal::GetEmptyStringAlreadyInited()) {
         hashes_->clear();
       }
     }
   }
+
+#undef OFFSET_OF_FIELD_
+#undef ZR_
+
   add_numbers_.Clear();
   ::memset(_has_bits_, 0, sizeof(_has_bits_));
   mutable_unknown_fields()->Clear();
@@ -231,20 +248,23 @@ void ChunkData::Clear() {
 
 bool ChunkData::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
-#define DO_(EXPRESSION) if (!(EXPRESSION)) return false
+#define DO_(EXPRESSION) if (!(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  while ((tag = input->ReadTag()) != 0) {
+  // @@protoc_insertion_point(parse_start:ChunkData)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoff(127);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
       // required int32 chunk_number = 1;
       case 1: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 8) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, &chunk_number_)));
           set_has_chunk_number();
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(16)) goto parse_chunk_type;
         break;
@@ -252,8 +272,7 @@ bool ChunkData::MergePartialFromCodedStream(
 
       // optional .ChunkData.ChunkType chunk_type = 2 [default = ADD];
       case 2: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 16) {
          parse_chunk_type:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -265,7 +284,7 @@ bool ChunkData::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(2, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(24)) goto parse_prefix_type;
         break;
@@ -273,8 +292,7 @@ bool ChunkData::MergePartialFromCodedStream(
 
       // optional .ChunkData.PrefixType prefix_type = 3 [default = PREFIX_4B];
       case 3: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_VARINT) {
+        if (tag == 24) {
          parse_prefix_type:
           int value;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
@@ -286,7 +304,7 @@ bool ChunkData::MergePartialFromCodedStream(
             mutable_unknown_fields()->AddVarint(3, value);
           }
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(34)) goto parse_hashes;
         break;
@@ -294,13 +312,12 @@ bool ChunkData::MergePartialFromCodedStream(
 
       // optional bytes hashes = 4;
       case 4: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 34) {
          parse_hashes:
           DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
                 input, this->mutable_hashes()));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
         if (input->ExpectTag(42)) goto parse_add_numbers;
         break;
@@ -308,30 +325,28 @@ bool ChunkData::MergePartialFromCodedStream(
 
       // repeated int32 add_numbers = 5 [packed = true];
       case 5: {
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
-            ::google::protobuf::internal::WireFormatLite::WIRETYPE_LENGTH_DELIMITED) {
+        if (tag == 42) {
          parse_add_numbers:
           DO_((::google::protobuf::internal::WireFormatLite::ReadPackedPrimitive<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  input, this->mutable_add_numbers())));
-        } else if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag)
-                   == ::google::protobuf::internal::WireFormatLite::
-                      WIRETYPE_VARINT) {
+        } else if (tag == 40) {
           DO_((::google::protobuf::internal::WireFormatLite::ReadRepeatedPrimitiveNoInline<
                    ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
                  1, 42, input, this->mutable_add_numbers())));
         } else {
-          goto handle_uninterpreted;
+          goto handle_unusual;
         }
-        if (input->ExpectAtEnd()) return true;
+        if (input->ExpectAtEnd()) goto success;
         break;
       }
 
       default: {
-      handle_uninterpreted:
-        if (::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
             ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
-          return true;
+          goto success;
         }
         DO_(::google::protobuf::internal::WireFormat::SkipField(
               input, tag, mutable_unknown_fields()));
@@ -339,12 +354,18 @@ bool ChunkData::MergePartialFromCodedStream(
       }
     }
   }
+success:
+  // @@protoc_insertion_point(parse_success:ChunkData)
   return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:ChunkData)
+  return false;
 #undef DO_
 }
 
 void ChunkData::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:ChunkData)
   // required int32 chunk_number = 1;
   if (has_chunk_number()) {
     ::google::protobuf::internal::WireFormatLite::WriteInt32(1, this->chunk_number(), output);
@@ -364,7 +385,7 @@ void ChunkData::SerializeWithCachedSizes(
 
   // optional bytes hashes = 4;
   if (has_hashes()) {
-    ::google::protobuf::internal::WireFormatLite::WriteBytes(
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
       4, this->hashes(), output);
   }
 
@@ -382,10 +403,12 @@ void ChunkData::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         unknown_fields(), output);
   }
+  // @@protoc_insertion_point(serialize_end:ChunkData)
 }
 
 ::google::protobuf::uint8* ChunkData::SerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
+  // @@protoc_insertion_point(serialize_to_array_start:ChunkData)
   // required int32 chunk_number = 1;
   if (has_chunk_number()) {
     target = ::google::protobuf::internal::WireFormatLite::WriteInt32ToArray(1, this->chunk_number(), target);
@@ -428,6 +451,7 @@ void ChunkData::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         unknown_fields(), target);
   }
+  // @@protoc_insertion_point(serialize_to_array_end:ChunkData)
   return target;
 }
 

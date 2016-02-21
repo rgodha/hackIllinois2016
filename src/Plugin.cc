@@ -49,6 +49,45 @@ static size_t url_response_handler(void *contents, size_t size, size_t nmemb, vo
 	return realsize;
 	}
 
+void parseData(const ChunkData& c_data, size_t c_len) 
+	{	
+	for(int i=0; i < c_data.add_numbers_size(); i++) {
+		printf("Chunk Number: %d\n",c_data.chunk_number());
+		if(c_data.has_chunk_type()) {
+			ChunkData::ChunkType c_type = c_data.chunk_type();
+			switch(c_type) {
+				case ChunkData::ChunkType::ChunkData_ChunkType_ADD:
+					printf("Chunk Type: ADD\n");
+					break;
+
+				case ChunkData::ChunkType::ChunkData_ChunkType_SUB:
+					printf("Chunk Type: SUB\n");
+					break;
+			}
+		}
+		
+	    	if(c_data.has_prefix_type()) {	
+			ChunkData::PrefixType p_type = c_data.prefix_type();
+			switch(p_type) {
+				case ChunkData::PrefixType::ChunkData_PrefixType_PREFIX_4B:
+					printf("Prefix is 4B\n");
+					break;
+
+				case ChunkData::PrefixType::ChunkData_PrefixType_FULL_32B:
+					printf("Prefix is 32B\n");
+					break;
+			}
+		}
+		/* hash is included for each hash 
+ 		 * TODO
+		 **/
+		if(c_data.has_hashes()) {
+			printf("Have Hashes\n");	
+		}
+	}
+	return;
+	}
+
 // The URL response callback function for protobuffers
 static size_t url_response_handler_proto_buff(void *contents, size_t size, size_t nmemb, void *userp)
 	{
@@ -75,10 +114,13 @@ static size_t url_response_handler_proto_buff(void *contents, size_t size, size_
 
 	printf("Parsing chunk of length %d\n", chunk_len);
 	// TODO: Parse the chunk data using protocol buffers
-	// 	char* chunk_data = mem->memory + 4;
+	char* chunk_data = mem->memory + 4;
+	
+	//ChunkData::
 	// Figure out how to do something like:
-	//     ProtoBuffer->Parse(chunk_data, chunk_len);
-
+	//ProtoBuffer->Parse(chunk_data, chunk_len);
+	// Parse the data.
+	//parseData(chunk_data, chunk_len);
 
 	return realsize;
 	}
@@ -154,6 +196,7 @@ int Plugin::download_dataset_for_list(char* list_name)
 
 	// TODO: Parse the result, and query the redirection URLs
 	// (start with u:) with download_redirect_data_for_list
+	
 	
 	curl_easy_cleanup(curl);
 	return 0;

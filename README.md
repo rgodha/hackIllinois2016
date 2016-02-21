@@ -31,14 +31,3 @@ check those against the Safe Browsing API. There was an article a couple months 
 
 As more and more exploits are moving to the web, I think this integration would be the single biggest security feature in several
 years.
-
-
-Google Developer Guide: https://developers.google.com/safe-browsing/developers_guide_v3 
-It gives step by step process:
-  1) Request message format to be sent to get list of blacklisted websites.
-  2) Response message format to parse the response from Google and get all lists.
-  3) Request the hashs from all the lists and save them.
-  4) For each hash request the full hashes.
-  5) Convert them in canonical format.
-  
-Detailed request and response message format is mentioned in the Guide.

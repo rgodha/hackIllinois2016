@@ -1,6 +1,8 @@
 # hackIllinois2016
+Summary: <br/>
 With the Google Safe Browsing API, you can query URLs to detect and alert on malicious or phishing sites. By adding this to the Bro Network Security Monitor, you would gain alerts and protection for all users on a network.
 
+Description: <br/>
 The idea here is to integrate the Bro network security monitor with Google's Safe Browsing API. Bro is a passive network security
 monitor -- it receives a copy of your network traffic, and it's able to analyze the higher-level protocols to log details like URLs, file hashes, SSL certificates, etc. At NCSA (University of Illinois, UC) they rely on Bro to monitor and secure everything from their wireless nets to some of the largest supercomputers -- all told, Bro have over 1 Tbps of fiber connectivity that can be monitored with Bro.
 
